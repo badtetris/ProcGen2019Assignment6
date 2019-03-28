@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5047588388260938137
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5047588388260938215}
+  - component: {fileID: 5047588388260938214}
+  m_Layer: 0
+  m_Name: task1Digger
+  m_TagString: Digger
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5047588388260938215
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5047588388260938137}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5047588388260938214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5047588388260938137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c75db4d631b704a85aad6354478d26cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floorTilePrefab: {fileID: 967049992319055205, guid: 8c33a125ab6b346559533a50e5aa9150,
+    type: 3}
+  treasureTilePrefab: {fileID: 7435293733488839438, guid: 55ddc9488e3cd4bfd9231844c5103bf3,
+    type: 3}
+  turnLeftProbability: 0.1
+  turnRightProbability: 0.1
+  turnAroundProbability: 0.05
+  roomWidth: 2
+  roomHeight: 2
+  roomProbability: 0.5
+  maxNumberOfDiggers: 10
+  spawnNewDiggerBaseProbability: 0.01
+  deleteDiggerBaseProbability: 0.1

@@ -2,79 +2,71 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Task1Generator : MonoBehaviour {
 
-    public const float TILE_SIZE = 2f;
-
+    public GameObject diggerPrefab;
     public GameObject playerPrefab;
-    public GameObject wallPrefab;
 
-    // These are randomized by the task randomizer
-    public int gridWidth = 20;
-    public int gridHeight = 10;
+    public int maxNumFloors = 100;
 
-    public int numExtraWalls = 2;
+    public bool generating = false;
 
-    bool[,] _wallGrid;
+    public Text statusText;
+
+    public void beginGeneration() {
+        Task1Digger.totalFloors = 0;
+        Instantiate(diggerPrefab, Vector3.zero, Quaternion.identity);
+        generating = true;
+    }
+
+    public void endGeneration() {
+        generating = false;
+        foreach (GameObject diggerObj in GameObject.FindGameObjectsWithTag("Digger")) {
+            Destroy(diggerObj);
+        }
+
+        // Convert the floor tiles into something that makes sense (i.e. not walls)
+        convertFloorTiles();
+
+        // Finally, spawn the player at 0, 0, 0
+        Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+    }
+
+    public void convertFloorTiles() {
+        // Task 1-a code HERE:
+        // By default, the digger spawns "wall" tiles where the floor should go. 
+        // Your task is to convert these walls into something else so the player can move over every location where there's
+        // a floor tile and CANNOT move over any location where there isn't a floor tile.
+
+    }
 
     void Start() {
-        _wallGrid = new bool[gridWidth, gridHeight];
-
-        fillGrid();
-        spawnWalls();
-        spawnPlayer();
-
-        // Move ourself based on our width and height so we're centered
-        float offsetX = gridWidth * TILE_SIZE / 2f - TILE_SIZE/2f;
-        float offsetY = gridHeight * TILE_SIZE / 2f - TILE_SIZE/2f;
-        transform.position -= new Vector3(offsetX, offsetY, 0);
+        beginGeneration();
     }
-
-    void fillGrid() {
-        // Your code for 1-a goes here:
-        // Reminder, you want to spawn walls all along the border
-        // (i.e. grid positions <0,0>, <0,1>,...,<0,gridHeight-1> would all have walls (and so on for the other sides))
-        // Additionally, don't forget to spawn extra walls according to numExtraWalls
-    }
-
-    Vector2Int getPlayerSpawnPos() {
-        // Your code for 1-b here:
-
-        // Default implementation: You'll want to replace this
-        return new Vector2Int(0, 0);
-    }
-
-
-
-
-    void spawnWalls() {
-        // Spawns walls at the locations provided by _wallGrid
-        for (int x = 0; x < gridWidth; x++) {
-            for (int y = 0; y < gridHeight; y++) {
-                if (_wallGrid[x, y]) {
-                    GameObject wallObj = Instantiate(wallPrefab);
-                    wallObj.transform.parent = transform;
-                    wallObj.transform.localPosition = new Vector3(x * TILE_SIZE, y * TILE_SIZE, 0);
-                }
-            }
-        }
-    }
-
-    void spawnPlayer() {
-        // Spawns the player at the location provided by getPlayerSpawnPos
-        Vector2Int playerPos = getPlayerSpawnPos();
-        GameObject playerObj = Instantiate(playerPrefab);
-        playerObj.transform.parent = transform;
-        playerObj.transform.localPosition = new Vector3(playerPos.x * TILE_SIZE, playerPos.y * TILE_SIZE, 0);
-    }
-
-
-
 
     void Update() {
+        if (generating) {
+            float percentDone = Task1Digger.totalFloors / (float)maxNumFloors;
+            statusText.text = "Generating ("
+                + Mathf.FloorToInt(percentDone*100)
+                +"%) Diggers: " + Task1Digger.totalDiggers 
+                +"\nPress R to Reload";
+
+            // We're done generating after we exceed the max number of floors
+            if (Task1Digger.totalFloors >= maxNumFloors) {
+                endGeneration();
+            }
+        }
+        else {
+            statusText.text = "Done, Press R to Reload";
+        }
         if (Input.GetKeyDown(KeyCode.R)) {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
+
+
+   
 }
