@@ -6,67 +6,38 @@ using UnityEngine.UI;
 
 public class Task1Generator : MonoBehaviour {
 
-    public GameObject diggerPrefab;
-    public GameObject playerPrefab;
+    public GameObject nodeDisplayPrefab;
 
-    public int maxNumFloors = 100;
+    private GameObject _rootObj;
+    private TreeNode _root;
 
-    public bool generating = false;
-
-    public Text statusText;
-
-    public void beginGeneration() {
-        Task1Digger.totalFloors = 0;
-        Instantiate(diggerPrefab, Vector3.zero, Quaternion.identity);
-        generating = true;
-    }
-
-    public void endGeneration() {
-        generating = false;
-        foreach (GameObject diggerObj in GameObject.FindGameObjectsWithTag("Digger")) {
-            Destroy(diggerObj);
-        }
-
-        // Convert the floor tiles into something that makes sense (i.e. not walls)
-        convertFloorTiles();
-
-        // Finally, spawn the player at 0, 0, 0
-        Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
-    }
-
-    public void convertFloorTiles() {
-        // Task 1-a code HERE:
-        // By default, the digger spawns "wall" tiles where the floor should go. 
-        // Your task is to convert these walls into something else so the player can move over every location where there's
-        // a floor tile and CANNOT move over any location where there isn't a floor tile.
-
-    }
+    public int minDesiredNodes = 12;
+    public int maxDesiredNodes = 16;
 
     void Start() {
-        beginGeneration();
+        _root = SpaceTree.createTree();
+        _rootObj = SpaceTree.spawnTreeDisplay(_root, nodeDisplayPrefab, transform);
     }
 
     void Update() {
-        if (generating) {
-            float percentDone = Task1Digger.totalFloors / (float)maxNumFloors;
-            statusText.text = "Generating ("
-                + Mathf.FloorToInt(percentDone*100)
-                +"%) Diggers: " + Task1Digger.totalDiggers 
-                +"\nPress R to Reload";
-
-            // We're done generating after we exceed the max number of floors
-            if (Task1Digger.totalFloors >= maxNumFloors) {
-                endGeneration();
-            }
-        }
-        else {
-            statusText.text = "Done, Press R to Reload";
-        }
         if (Input.GetKeyDown(KeyCode.R)) {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            if (_rootObj != null) {
+                Destroy(_rootObj);
+            }
+            _root.doRandomSplit();
+            _rootObj = SpaceTree.spawnTreeDisplay(_root, nodeDisplayPrefab, transform);
+        }
+        if (Input.GetKeyDown(KeyCode.Return)) {
+            if (_rootObj != null) {
+                Destroy(_rootObj);
+            }
+            int desiredNodes = Random.Range(minDesiredNodes, maxDesiredNodes + 1);
+            _root = SpaceTree.createTree(desiredNodes);
+            _rootObj = SpaceTree.spawnTreeDisplay(_root, nodeDisplayPrefab, transform);
+        }
     }
-
-
    
 }
